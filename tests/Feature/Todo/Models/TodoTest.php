@@ -219,6 +219,25 @@ class TodoTest extends TestCase
         $this->assertDatabaseHas('todos', ['due_date' => today()->addDays(2)]);
     }
 
+    /**
+     * @test
+     * @return void
+     */
+    public function todoHasAPriority()
+    {
+        $user = User::factory()->create();
+
+        $todo = Todo::create([
+            'title' => '__title__',
+            'body' => '__body__',
+            'due_date' => today()->addDays(2),
+            'priority' => "HIGH",
+            'user_id' => $user->id
+        ]);
+
+        $this->assertDatabaseHas('todos', ['priority' => "HIGH"]);
+    }
+
 
 
 
