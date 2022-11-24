@@ -181,6 +181,25 @@ class TodoTest extends TestCase
         $this->assertDatabaseHas('todos', ['title' => '__title__']);
     }
 
+    /**
+     * @test
+     * @return void
+     */
+    public function todoHasABody()
+    {
+        $user = User::factory()->create();
+
+        $todo = Todo::create([
+            'title' => '__title__',
+            'body' => '__body__',
+            'due_date' => today()->addDays(2),
+            'priority' => null,
+            'user_id' => $user->id
+        ]);
+
+        $this->assertDatabaseHas('todos', ['body' => '__body__']);
+    }
+
 
 
 
