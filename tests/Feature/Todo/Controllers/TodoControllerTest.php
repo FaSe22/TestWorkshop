@@ -2,21 +2,39 @@
 
 namespace Tests\Feature\Todo\Controllers;
 
+use App\Domain\TodoService;
+use App\Models\Todo;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Mockery\MockInterface;
 use Tests\TestCase;
 
 class TodoControllerTest extends TestCase
 {
     /**
-     * A basic feature test example.
-     *
      * @return void
+     * @test
      */
-    public function test_example()
+    public function indexShouldBeSuccessful()
     {
-        $response = $this->get('/');
+        $this->get('todos')->assertSuccessful();
+    }
 
-        $response->assertStatus(200);
+    public function destroyShouldBeSuccessful()
+    {
+
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function showShouldBeSuccessful()
+    {
+        $this->mock(TodoService::class, function(MockInterface $mock){
+           $mock->shouldReceive('getTodo')->andReturn(new Todo());
+        });
+
+        $this->get('todos/1')->assertSuccessful();
     }
 }
