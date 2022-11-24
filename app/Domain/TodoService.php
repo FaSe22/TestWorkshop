@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 class TodoService
 {
 
-    public function get(): Collection
+    public function getTodos(): Collection
     {
         return Todo::all();
     }

@@ -19,7 +19,7 @@ class TodoServiceTest extends TestCase
     public function getMethodShouldReturnAllTodos()
     {
         $todos = Todo::factory(10)->forUser()->create();
-        $res = app(TodoService::class)->get();
+        $res = app(TodoService::class)->getTodos();
         $this->assertCount(10, $res);
     }
 
