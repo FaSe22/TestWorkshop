@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\Auth;
 class TodoController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->authorizeResource(Todo::class, 'todo');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -38,11 +43,11 @@ class TodoController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $todo
+     * @param Todo $todo
      * @param TodoService $todoService
      * @return Response
      */
-    public function show(int $todo, TodoService $todoService): Response
+    public function show(TodoService $todoService, Todo $todo): Response
     {
         return response($todoService->getTodo($todo));
     }
@@ -52,11 +57,11 @@ class TodoController extends Controller
      * Update the specified resource in storage.
      *
      * @param UpdateTodoRequest $request
-     * @param int $todo
+     * @param Todo $todo
      * @param TodoService $todoService
      * @return Response
      */
-    public function update(UpdateTodoRequest $request, int $todo, TodoService $todoService): Response
+    public function update(UpdateTodoRequest $request, Todo $todo, TodoService $todoService): Response
     {
         return response($todoService->updateTodo($todo, $request->validated()));
     }
@@ -64,11 +69,11 @@ class TodoController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $todo
+     * @param Todo $todo
      * @param TodoService $todoService
      * @return Response
      */
-    public function destroy(int $todo, TodoService $todoService): Response
+    public function destroy(TodoService $todoService, Todo $todo): Response
     {
         return response($todoService->deleteTodo($todo));
     }

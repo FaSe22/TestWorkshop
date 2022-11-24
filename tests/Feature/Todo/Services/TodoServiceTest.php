@@ -30,7 +30,7 @@ class TodoServiceTest extends TodoTestCase
     public function getTodoMethodShouldReturnTheTodo(): void
     {
         $todo = Todo::factory()->forUser()->create();
-        $res = app(TodoService::class)->getTodo($todo->id);
+        $res = app(TodoService::class)->getTodo($todo);
         $this->assertEquals($todo->id, $res->id);
     }
 
@@ -57,7 +57,7 @@ class TodoServiceTest extends TodoTestCase
     public function deleteTodoMethodShouldDeleteTheTodo(): void
     {
         $todo = Todo::factory()->forUser()->create();
-        $res = app(TodoService::class)->deleteTodo($todo->id);
+        $res = app(TodoService::class)->deleteTodo($todo);
         $this->assertDatabaseCount('todos', 0);
         $this->assertTrue($res);
     }
@@ -69,7 +69,7 @@ class TodoServiceTest extends TodoTestCase
     public function updateMethodShouldUpdateTheTodo(): void
     {
         $todo = Todo::factory()->forUser()->create();
-        $res = app(TodoService::class)->updateTodo($todo->id, $this->fields);
+        $res = app(TodoService::class)->updateTodo($todo, $this->fields);
         $this->assertTrue($res);
         $this->assertEquals($this->fields['title'], $todo->refresh()->title);
     }

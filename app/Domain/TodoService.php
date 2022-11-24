@@ -13,9 +13,9 @@ class TodoService
         return Todo::all();
     }
 
-    public function getTodo(int $id)
+    public function getTodo($todo)
     {
-        return Todo::findOrFail($id);
+        return $todo;
     }
 
     public function createTodo(array $args)
@@ -23,14 +23,14 @@ class TodoService
         return Todo::create($args);
     }
 
-    public function deleteTodo(int $id)
+    public function deleteTodo(Todo $todo)
     {
-        return Todo::findOrFail($id)->delete();
+        return $todo->delete();
     }
 
-    public function updateTodo(int $id, array $args)
+    public function updateTodo(Todo $todo, array $args)
     {
-        return Todo::findOrFail($id)->update($args);
+        return $todo->update($args);
     }
 
 }

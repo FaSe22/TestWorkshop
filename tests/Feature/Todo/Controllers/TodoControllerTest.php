@@ -2,21 +2,29 @@
 
 namespace Tests\Feature\Todo\Controllers;
 
-use App\Domain\TodoService;
 use App\Models\Todo;
-use Mockery\MockInterface;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Todo\DataProviders\FieldsProvider;
 use Tests\Feature\Todo\TodoTestCase;
 
+/**
+ * @property Collection|Model|mixed $authenticated_user
+ * @property Collection|Model|mixed $todo
+ */
 class TodoControllerTest extends TodoTestCase
 {
+    use RefreshDatabase;
+
     /**
      * @return void
      * @test
      */
     public function indexShouldBeSuccessful(): void
     {
-        $this->get('todos')->assertSuccessful();
+        $this->actingAs($this->authenticated_user)->get('todos')->assertSuccessful();
     }
 
     /**
@@ -25,11 +33,7 @@ class TodoControllerTest extends TodoTestCase
      */
     public function destroyShouldBeSuccessful(): void
     {
-        $this->mock(TodoService::class, function (MockInterface $mock) {
-            $mock->shouldReceive('deleteTodo')->andReturn(true);
-        });
-
-        $this->delete('todos/1')->assertSuccessful();
+        $this->actingAs($this->authenticated_user)->delete('todos/'. $this->todo->id)->assertSuccessful();
     }
 
     /**
@@ -38,11 +42,7 @@ class TodoControllerTest extends TodoTestCase
      */
     public function showShouldBeSuccessful(): void
     {
-        $this->mock(TodoService::class, function (MockInterface $mock) {
-            $mock->shouldReceive('getTodo')->andReturn(new Todo());
-        });
-
-        $this->get('todos/1')->assertSuccessful();
+        $this->actingAs($this->authenticated_user)->get('todos/'. $this->todo->id)->assertSuccessful();
     }
 
     /**
@@ -54,7 +54,7 @@ class TodoControllerTest extends TodoTestCase
     public function itShouldReturnValidationErrorsForPost($input): void
     {
         unset($this->fields[$input]);
-        $this->post('todos', $this->fields)->assertInvalid($input);
+        $this->actingAs($this->authenticated_user)->post('todos', $this->fields)->assertInvalid($input);
     }
 
     /**
@@ -66,8 +66,59 @@ class TodoControllerTest extends TodoTestCase
     public function itShouldReturnValidationErrorsForPatch($input): void
     {
         unset($this->fields[$input]);
-        $this->patch('todos/1', $this->fields)->assertInvalid($input);
+        $this->actingAs($this->authenticated_user)->patch('todos/' . $this->todo->id, $this->fields)->assertInvalid($input);
     }
+
+
+    /**
+     * @return void
+     * @test
+     */
+    public function onlyAuthenticatedUsersCanSeeTodos(): void
+    {
+        $this->get('todos')->assertForbidden();
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function onlyOwnerCanDeleteTodo(): void
+    {
+        $random_user = User::factory()->create();
+        $this->actingAs($random_user)->delete('todos/'. $this->todo->id)->assertForbidden();
+    }
+
+
+    /**
+     * @return void
+     * @test
+     */
+    public function onlyOwnerCanSeeHisTodo(): void
+    {
+        $random_user = User::factory()->create();
+        $this->actingAs($random_user)->get('todos/'. $this->todo->id)->assertForbidden();
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function onlyOwnerCanUpdateHisTodo(): void
+    {
+        $random_user = User::factory()->create();
+        $this->actingAs($random_user)->patch('todos/' . $this->todo->id, $this->fields)->assertForbidden();
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function onlyAuthenticatedUsersCanCreateTodos(): void
+    {
+        $this->post('todos', $this->fields)->assertForbidden();
+    }
+
 
 
     public function provideNonNullableField(): array
@@ -78,6 +129,13 @@ class TodoControllerTest extends TodoTestCase
     public function provideFieldValues(): array
     {
         return app(FieldsProvider::class)->provideFieldValues();
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->authenticated_user = User::factory()->create();
+        $this->todo = Todo::factory()->for($this->authenticated_user)->create();
     }
 
 }
