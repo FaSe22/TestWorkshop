@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
+use Tests\Feature\Todo\DataProviders\FieldsProvider;
 use Tests\Feature\Todo\TodoTestCase;
 use Tests\TestCase;
 
@@ -115,24 +116,16 @@ class TodoTest extends TodoTestCase
     }
 
 
-    public function provideNonNullableField(): array
+    public function provideNonNullableField()
     {
-        return [
-            'title is not nullable' => ['title'],
-            'body is not nullable' => ['body'],
-            'due date is not nullable' => ['due_date']
-        ];
+        return app(FieldsProvider::class)->provideNonNullableField();
     }
 
-    public function provideFieldValues(): array
+    public function provideFieldValues()
     {
-        return [
-            "a Todo has a Title" =>['title', $this->fields['title']],
-            "a Todo has a Body" => ['body', $this->fields['body']],
-            "a Todo has a Due Date" => ['due_date', $this->fields['due_date']],
-            "a Todo has a Priority" =>['priority', $this->fields['priority']],
-        ];
+        return app(FieldsProvider::class)->provideFieldValues();
     }
+
 
     protected function setUp(): void
     {
