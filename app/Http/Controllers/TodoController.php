@@ -7,17 +7,18 @@ use App\Http\Requests\StoreTodoRequest;
 use App\Http\Requests\UpdateTodoRequest;
 use App\Models\Todo;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class TodoController extends Controller
 {
 
-
     /**
      * Display a listing of the resource.
      *
+     * @param TodoService $todoService
      * @return Response
      */
-    public function index(TodoService $todoService)
+    public function index(TodoService $todoService): Response
     {
         return response($todoService->getTodos());
     }
@@ -26,20 +27,22 @@ class TodoController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreTodoRequest $request
+     * @param TodoService $todoService
      * @return Response
      */
-    public function store(StoreTodoRequest $request)
+    public function store(StoreTodoRequest $request, TodoService $todoService): Response
     {
-
+        return response($todoService->createTodo($request->validated() + ['user_id' =>Auth::id()]));
     }
 
     /**
      * Display the specified resource.
      *
-     * @param Todo $todo
+     * @param int $todo
+     * @param TodoService $todoService
      * @return Response
      */
-    public function show(int $todo, TodoService $todoService)
+    public function show(int $todo, TodoService $todoService): Response
     {
         return response($todoService->getTodo($todo));
     }
@@ -49,21 +52,23 @@ class TodoController extends Controller
      * Update the specified resource in storage.
      *
      * @param UpdateTodoRequest $request
-     * @param Todo $todo
+     * @param int $todo
+     * @param TodoService $todoService
      * @return Response
      */
-    public function update(UpdateTodoRequest $request, Todo $todo)
+    public function update(UpdateTodoRequest $request, int $todo, TodoService $todoService): Response
     {
-        //
+        return response($todoService->updateTodo($todo, $request->validated()));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param Todo $todo
+     * @param int $todo
+     * @param TodoService $todoService
      * @return Response
      */
-    public function destroy(int $todo, TodoService $todoService)
+    public function destroy(int $todo, TodoService $todoService): Response
     {
         return response($todoService->deleteTodo($todo));
     }
