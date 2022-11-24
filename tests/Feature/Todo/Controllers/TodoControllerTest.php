@@ -20,9 +20,17 @@ class TodoControllerTest extends TestCase
         $this->get('todos')->assertSuccessful();
     }
 
+    /**
+     * @return void
+     * @test
+     */
     public function destroyShouldBeSuccessful()
     {
+        $this->mock(TodoService::class, function(MockInterface $mock){
+            $mock->shouldReceive('deleteTodo')->andReturn(true);
+        });
 
+        $this->delete('todos/1')->assertSuccessful();
     }
 
     /**
