@@ -18,4 +18,9 @@ class TodoService
         return Todo::findOrFail($id);
     }
 
+    public function createTodo(array $args)
+    {
+        return Todo::create($args);
+    }
+
 }
