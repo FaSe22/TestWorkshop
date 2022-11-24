@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('body');
             $table->date('due_date');
             $table->enum('status', ['TODO', 'IN_PROGRESS', 'DONE']);
+            $table->string('priority')->nullable();
             $table->foreignIdFor(User::class);
             $table->timestamps();
         });
