@@ -4,142 +4,86 @@ namespace Tests\Feature\Todo\Models;
 
 use App\Models\Todo;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
+/**
+ * @property Collection|Model|mixed $user
+ */
 class TodoTest extends TestCase
 {
 
     use RefreshDatabase;
 
+    private array $fields = [
+        'title' => '__title__',
+        'body' => '__body__',
+        'due_date' => "2023-01-01",
+        'priority' => 'HIGH',
+    ];
+
+
     /**
      * @test
      * @return void
      */
-    public function itShouldCreateAnEntryInTodosTable()
+    public function itShouldCreateAnEntryInTodosTable(): void
     {
-        $user = User::factory()->create();
-        Todo::create([
-            'title' => '__title__',
-            'body' => '__body__',
-            'due_date' => today()->addDays(2),
-            'priority' => 'HIGH',
-            'user_id' => $user->id
-        ]);
-
+        Todo::create($this->fields + ['user_id' => $this->user->id]);
         $this->assertDatabaseCount('todos', 1);
     }
 
 
     /**
      * @test
+     * @dataProvider provideNonNullableField
+     * @param $input
      * @return void
      */
-    public function titleShouldNotBeNullable()
+    public function fieldShouldBeNotNullable($input): void
     {
-        $this->expectException(QueryException::class);
+        unset($this->fields[$input]);
 
-        $user = User::factory()->create();
-        Todo::create([
-            'title' => null,
-            'body' => '__body__',
-            'due_date' => today()->addDays(2),
-            'priority' => 'HIGH',
-            'user_id' => $user->id
-        ]);
+        $this->expectException(QueryException::class);
+        Todo::create($this->fields +['user_id' => $this->user->id]);
     }
 
     /**
      * @test
      * @return void
      */
-    public function titleMaxLengthIsSetTo50()
+    public function titleMaxLengthIsSetTo50(): void
     {
-        $this->expectException(QueryException::class);
+        $this->fields['title'] = Str::random(51);
 
-        $user = User::factory()->create();
-        Todo::create([
-            'title' => Str::random(51),
-            'body' => '__body__',
-            'due_date' => today()->addDays(2),
-            'priority' => 'HIGH',
-            'user_id' => $user->id
-        ]);
+        $this->expectException(QueryException::class);
+        Todo::create($this->fields +['user_id' => $this->user->id]);
     }
+
+
 
     /**
      * @test
      * @return void
      */
-    public function bodyShouldNotBeNullable()
+    public function aTodoMustBelongToAUser(): void
     {
         $this->expectException(QueryException::class);
-
-        $user = User::factory()->create();
-        Todo::create([
-            'title' => '__title__',
-            'body' => null,
-            'due_date' => today()->addDays(2),
-            'priority' => 'HIGH',
-            'user_id' => $user->id
-        ]);
+        Todo::create($this->fields);
     }
+
 
     /**
      * @test
      * @return void
      */
-    public function aTodoMustBelongToAUser()
+    public function statusDefaultShouldBeTodo(): void
     {
-        $this->expectException(QueryException::class);
-
-        Todo::create([
-            'title' => '__title__',
-            'body' => '__body__',
-            'due_date' => today()->addDays(2),
-            'priority' => 'HIGH',
-            'user_id' => null
-        ]);
-    }
-
-    /**
-     * @test
-     * @return void
-     */
-    public function dueDateShouldNotBeNullable()
-    {
-        $this->expectException(QueryException::class);
-
-        $user = User::factory()->create();
-        Todo::create([
-            'title' => '__title__',
-            'body' => '__body__',
-            'due_date' => null,
-            'priority' => 'HIGH',
-            'user_id' => $user->id
-        ]);
-    }
-
-    /**
-     * @test
-     * @return void
-     */
-    public function statusDefaultShouldBeTodo()
-    {
-
-        $user = User::factory()->create();
-
-        $todo = Todo::create([
-            'title' => '__title__',
-            'body' => '__body__',
-            'due_date' => today()->addDays(2),
-            'priority' => 'HIGH',
-            'user_id' => $user->id
-        ]);
-
+        $todo = Todo::create($this->fields +['user_id' => $this->user->id]);
         $this->assertEquals('TODO', $todo->refresh()->status);
     }
 
@@ -147,98 +91,50 @@ class TodoTest extends TestCase
      * @test
      * @return void
      */
-    public function priorityIsOptional()
+    public function priorityIsOptional(): void
     {
-        $user = User::factory()->create();
-
-        $todo = Todo::create([
-            'title' => '__title__',
-            'body' => '__body__',
-            'due_date' => today()->addDays(2),
-            'priority' => null,
-            'user_id' => $user->id
-        ]);
-
+        Todo::create($this->fields +['user_id' => $this->user->id]);
         $this->assertDatabaseCount('todos', 1);
     }
 
     /**
      * @test
+     * @param $input
+     * @param $result
      * @return void
+     * @dataProvider provideFieldValues
      */
-    public function todoHasATitle()
+    public function valuesShouldBeWrittenToDatabase($input, $result): void
     {
-        $user = User::factory()->create();
-
-        $todo = Todo::create([
-            'title' => '__title__',
-            'body' => '__body__',
-            'due_date' => today()->addDays(2),
-            'priority' => null,
-            'user_id' => $user->id
-        ]);
-
-        $this->assertDatabaseHas('todos', ['title' => '__title__']);
-    }
-
-    /**
-     * @test
-     * @return void
-     */
-    public function todoHasABody()
-    {
-        $user = User::factory()->create();
-
-        $todo = Todo::create([
-            'title' => '__title__',
-            'body' => '__body__',
-            'due_date' => today()->addDays(2),
-            'priority' => null,
-            'user_id' => $user->id
-        ]);
-
-        $this->assertDatabaseHas('todos', ['body' => '__body__']);
-    }
-
-    /**
-     * @test
-     * @return void
-     */
-    public function todoHasADueDate()
-    {
-        $user = User::factory()->create();
-
-        $todo = Todo::create([
-            'title' => '__title__',
-            'body' => '__body__',
-            'due_date' => today()->addDays(2),
-            'priority' => null,
-            'user_id' => $user->id
-        ]);
-
-        $this->assertDatabaseHas('todos', ['due_date' => today()->addDays(2)]);
-    }
-
-    /**
-     * @test
-     * @return void
-     */
-    public function todoHasAPriority()
-    {
-        $user = User::factory()->create();
-
-        $todo = Todo::create([
-            'title' => '__title__',
-            'body' => '__body__',
-            'due_date' => today()->addDays(2),
-            'priority' => "HIGH",
-            'user_id' => $user->id
-        ]);
-
-        $this->assertDatabaseHas('todos', ['priority' => "HIGH"]);
+        Todo::create($this->fields + ['user_id' => $this->user->id]);
+        $this->assertDatabaseHas('todos', [$input => $result]);
     }
 
 
+    public function provideNonNullableField(): array
+    {
+        return [
+            'title is not nullable' => ['title'],
+            'body is not nullable' => ['body'],
+            'due date is not nullable' => ['due_date']
+        ];
+    }
+
+    public function provideFieldValues(): array
+    {
+        return [
+            "a Todo has a Title" =>['title', $this->fields['title']],
+            "a Todo has a Body" => ['body', $this->fields['body']],
+            "a Todo has a Due Date" => ['due_date', $this->fields['due_date']],
+            "a Todo has a Priority" =>['priority', $this->fields['priority']],
+        ];
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->user = User::factory()->create();
+    }
 
 
 }
