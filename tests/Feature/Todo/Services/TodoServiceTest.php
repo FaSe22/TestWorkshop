@@ -55,6 +55,7 @@ class TodoServiceTest extends TestCase
 
         $this->assertDatabaseCount('todos',1);
         $this->assertEquals($user->id, $res->user->id);
+        $this->assertEquals($this->fields['title'], $res->title);
     }
 
     /**
@@ -66,7 +67,7 @@ class TodoServiceTest extends TestCase
         $todo = Todo::factory()->forUser()->create();
         $res = app(TodoService::class)->deleteTodo($todo->id);
         $this->assertDatabaseCount('todos', 0);
-        $this->assertEquals(true, $res);
+        $this->assertTrue($res);
     }
 
     /**
@@ -75,7 +76,10 @@ class TodoServiceTest extends TestCase
      */
     public function updateMethodShouldUpdateTheTodo()
     {
-
+        $todo = Todo::factory()->forUser()->create();
+        $res = app(TodoService::class)->updateTodo($todo->id, $this->fields);
+        $this->assertTrue($res);
+        $this->assertEquals($this->fields['title'], $todo->refresh()->title);
     }
 
 }
