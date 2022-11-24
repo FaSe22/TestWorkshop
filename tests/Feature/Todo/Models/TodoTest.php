@@ -9,22 +9,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
+use Tests\Feature\Todo\TodoTestCase;
 use Tests\TestCase;
 
 /**
  * @property Collection|Model|mixed $user
  */
-class TodoTest extends TestCase
+class TodoTest extends TodoTestCase
 {
 
     use RefreshDatabase;
-
-    private array $fields = [
-        'title' => '__title__',
-        'body' => '__body__',
-        'due_date' => "2023-01-01",
-        'priority' => 'HIGH',
-    ];
 
 
     /**

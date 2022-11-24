@@ -6,27 +6,19 @@ use App\Domain\TodoService;
 use App\Models\Todo;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
+use Tests\Feature\Todo\TodoTestCase;
 
-class TodoServiceTest extends TestCase
+class TodoServiceTest extends TodoTestCase
 {
     use RefreshDatabase;
-
-    private array $fields = [
-        'title' => '__title__',
-        'body' => '__body__',
-        'due_date' => "2023-01-01",
-        'priority' => 'HIGH',
-    ];
 
     /**
      * @return void
      * @test
      */
-    public function getMethodShouldReturnAllTodos()
+    public function getMethodShouldReturnAllTodos(): void
     {
-        $todos = Todo::factory(10)->forUser()->create();
+        Todo::factory(10)->forUser()->create();
         $res = app(TodoService::class)->getTodos();
         $this->assertCount(10, $res);
     }
@@ -35,7 +27,7 @@ class TodoServiceTest extends TestCase
      * @return void
      * @test
      */
-    public function getTodoMethodShouldReturnTheTodo()
+    public function getTodoMethodShouldReturnTheTodo(): void
     {
         $todo = Todo::factory()->forUser()->create();
         $res = app(TodoService::class)->getTodo($todo->id);
@@ -46,7 +38,7 @@ class TodoServiceTest extends TestCase
      * @test
      * @return void
      */
-    public function createMethodShouldCreateATodo()
+    public function createMethodShouldCreateATodo(): void
     {
         $user = User::factory()->create();
         $res = app(TodoService::class)->createTodo($this->fields + [
@@ -62,7 +54,7 @@ class TodoServiceTest extends TestCase
      * @return void
      * @test
      */
-    public function deleteTodoMethodShouldDeleteTheTodo()
+    public function deleteTodoMethodShouldDeleteTheTodo(): void
     {
         $todo = Todo::factory()->forUser()->create();
         $res = app(TodoService::class)->deleteTodo($todo->id);
@@ -74,7 +66,7 @@ class TodoServiceTest extends TestCase
      * @return void
      * @test
      */
-    public function updateMethodShouldUpdateTheTodo()
+    public function updateMethodShouldUpdateTheTodo(): void
     {
         $todo = Todo::factory()->forUser()->create();
         $res = app(TodoService::class)->updateTodo($todo->id, $this->fields);
