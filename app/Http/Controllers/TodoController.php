@@ -63,8 +63,8 @@ class TodoController extends Controller
      * @param Todo $todo
      * @return Response
      */
-    public function destroy(Todo $todo)
+    public function destroy(int $todo, TodoService $todoService)
     {
-        //
+        return response($todoService->deleteTodo($todo));
     }
 }
