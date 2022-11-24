@@ -76,7 +76,16 @@ class TodoTest extends TestCase
      */
     public function bodyShouldNotBeNullable()
     {
+        $this->expectException(QueryException::class);
 
+        $user = User::factory()->create();
+        Todo::create([
+            'title' => '__title__',
+            'body' => null,
+            'due_date' => today()->addDays(2),
+            'priority' => 'HIGH',
+            'user_id' => $user->id
+        ]);
     }
 
     /**
