@@ -27,9 +27,11 @@ class TodoServiceTest extends TestCase
      * @return void
      * @test
      */
-    public function findMethodShouldReturnTheTodo()
+    public function getTodoMethodShouldReturnTheTodo()
     {
-
+        $todo = Todo::factory()->forUser()->create();
+        $res = app(TodoService::class)->getTodo($todo->id);
+        $this->assertEquals($todo->id, $res->id);
     }
 
     /**
