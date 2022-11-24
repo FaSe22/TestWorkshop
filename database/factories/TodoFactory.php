@@ -17,7 +17,10 @@ class TodoFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'title' => $this->faker->word(),
+            'body' => $this->faker->paragraph(),
+            'due_date' => $this->faker->date(),
+            'priority' => $this->faker->randomElement(['LOW', 'MEDIUM', 'HIGH'])
         ];
     }
 }
