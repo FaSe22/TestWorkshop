@@ -8,15 +8,80 @@ use Tests\TestCase;
 
 class TodoTest extends TestCase
 {
+
+    use RefreshDatabase;
+
     /**
-     * A basic feature test example.
-     *
+     * @test
      * @return void
      */
-    public function test_example()
+    public function itShouldCreateAnEntryInTodosTable()
     {
-        $response = $this->get('/');
 
-        $response->assertStatus(200);
     }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function titleShouldNotBeNullable()
+    {
+
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function titleMaxLengthIsSetTo50()
+    {
+
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function bodyShouldNotBeNullable()
+    {
+
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function aTodoMustBelongToAUser()
+    {
+
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function dueDateShouldNotBeNullable()
+    {
+
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function statusDefaultShouldBeTodo()
+    {
+
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function priorityIsOptional()
+    {
+
+    }
+
+
 }
