@@ -4,6 +4,7 @@ namespace Tests\Feature\Todo\Services;
 
 use App\Domain\TodoService;
 use App\Models\Todo;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -11,6 +12,13 @@ use Tests\TestCase;
 class TodoServiceTest extends TestCase
 {
     use RefreshDatabase;
+
+    private array $fields = [
+        'title' => '__title__',
+        'body' => '__body__',
+        'due_date' => "2023-01-01",
+        'priority' => 'HIGH',
+    ];
 
     /**
      * @return void
@@ -38,9 +46,15 @@ class TodoServiceTest extends TestCase
      * @test
      * @return void
      */
-    public function createMethodShouldCreateAnEntryInTodosTable()
+    public function createMethodShouldCreateATodo()
     {
+        $user = User::factory()->create();
+        $res = app(TodoService::class)->createTodo($this->fields + [
+            'user_id' => $user->id
+            ]);
 
+        $this->assertDatabaseCount('todos',1);
+        $this->assertEquals($user->id, $res->user->id);
     }
 
     /**
