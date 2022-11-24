@@ -94,7 +94,15 @@ class TodoTest extends TestCase
      */
     public function aTodoMustBelongToAUser()
     {
+        $this->expectException(QueryException::class);
 
+        Todo::create([
+            'title' => '__title__',
+            'body' => '__body__',
+            'due_date' => today()->addDays(2),
+            'priority' => 'HIGH',
+            'user_id' => null
+        ]);
     }
 
     /**
