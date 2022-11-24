@@ -4,6 +4,7 @@ namespace Tests\Feature\Todo\Models;
 
 use App\Models\Todo;
 use App\Models\User;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -31,13 +32,23 @@ class TodoTest extends TestCase
         $this->assertDatabaseCount('todos', 1);
     }
 
+
     /**
      * @test
      * @return void
      */
     public function titleShouldNotBeNullable()
     {
+        $this->expectException(QueryException::class);
 
+        $user = User::factory()->create();
+        Todo::create([
+            'title' => null,
+            'body' => '__body__',
+            'due_date' => today()->addDays(2),
+            'priority' => 'HIGH',
+            'user_id' => $user->id
+        ]);
     }
 
     /**
