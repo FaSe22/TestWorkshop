@@ -28,4 +28,9 @@ class TodoService
         return Todo::findOrFail($id)->delete();
     }
 
+    public function updateTodo(int $id, array $args)
+    {
+        return Todo::findOrFail($id)->update($args);
+    }
+
 }
