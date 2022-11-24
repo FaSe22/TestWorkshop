@@ -111,6 +111,8 @@ class TodoTest extends TestCase
      */
     public function dueDateShouldNotBeNullable()
     {
+        $this->expectException(QueryException::class);
+
         $user = User::factory()->create();
         Todo::create([
             'title' => '__title__',
