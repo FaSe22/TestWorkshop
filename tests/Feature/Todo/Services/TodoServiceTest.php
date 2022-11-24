@@ -61,9 +61,12 @@ class TodoServiceTest extends TestCase
      * @return void
      * @test
      */
-    public function deleteMethodShouldDeleteTheTodo()
+    public function deleteTodoMethodShouldDeleteTheTodo()
     {
-
+        $todo = Todo::factory()->forUser()->create();
+        $res = app(TodoService::class)->deleteTodo($todo->id);
+        $this->assertDatabaseCount('todos', 0);
+        $this->assertEquals(true, $res);
     }
 
     /**
