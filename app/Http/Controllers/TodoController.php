@@ -2,51 +2,55 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\TodoService;
 use App\Http\Requests\StoreTodoRequest;
 use App\Http\Requests\UpdateTodoRequest;
 use App\Models\Todo;
+use Illuminate\Http\Response;
 
 class TodoController extends Controller
 {
+
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function index()
+    public function index(TodoService $todoService)
     {
-        //
+        return response($todoService->getTodos());
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreTodoRequest  $request
-     * @return \Illuminate\Http\Response
+     * @param StoreTodoRequest $request
+     * @return Response
      */
     public function store(StoreTodoRequest $request)
     {
-        //
+
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Todo  $todo
-     * @return \Illuminate\Http\Response
+     * @param Todo $todo
+     * @return Response
      */
-    public function show(Todo $todo)
+    public function show(int $todo, TodoService $todoService)
     {
-        //
+        return response($todoService->getTodo($todo));
     }
 
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateTodoRequest  $request
-     * @param  \App\Models\Todo  $todo
-     * @return \Illuminate\Http\Response
+     * @param UpdateTodoRequest $request
+     * @param Todo $todo
+     * @return Response
      */
     public function update(UpdateTodoRequest $request, Todo $todo)
     {
@@ -56,8 +60,8 @@ class TodoController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Todo  $todo
-     * @return \Illuminate\Http\Response
+     * @param Todo $todo
+     * @return Response
      */
     public function destroy(Todo $todo)
     {
