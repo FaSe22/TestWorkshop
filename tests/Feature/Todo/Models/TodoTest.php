@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Todo\Models;
 
+use App\Models\Todo;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -17,7 +19,16 @@ class TodoTest extends TestCase
      */
     public function itShouldCreateAnEntryInTodosTable()
     {
+        $user = User::factory()->create();
+        Todo::create([
+            'title' => '__title__',
+            'body' => '__body__',
+            'due_date' => today()->addDays(2),
+            'priority' => 'HIGH',
+            'user_id' => $user->id
+        ]);
 
+        $this->assertDatabaseCount('todos', 1);
     }
 
     /**
