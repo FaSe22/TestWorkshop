@@ -2,21 +2,59 @@
 
 namespace Tests\Feature\Todo\Services;
 
+use App\Domain\TodoService;
+use App\Models\Todo;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class TodoServiceTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
-     * A basic feature test example.
-     *
+     * @return void
+     * @test
+     */
+    public function getMethodShouldReturnAllTodos()
+    {
+
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function findMethodShouldReturnTheTodo()
+    {
+
+    }
+
+    /**
+     * @test
      * @return void
      */
-    public function test_example()
+    public function createMethodShouldCreateAnEntryInTodosTable()
     {
-        $response = $this->get('/');
 
-        $response->assertStatus(200);
     }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function deleteMethodShouldDeleteTheTodo()
+    {
+
+    }
+
+    /**
+     * @return void
+     * @test
+     */
+    public function updateMethodShouldUpdateTheTodo()
+    {
+
+    }
+
 }
