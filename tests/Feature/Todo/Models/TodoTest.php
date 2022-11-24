@@ -130,6 +130,17 @@ class TodoTest extends TestCase
     public function statusDefaultShouldBeTodo()
     {
 
+        $user = User::factory()->create();
+
+        $todo = Todo::create([
+            'title' => '__title__',
+            'body' => '__body__',
+            'due_date' => today()->addDays(2),
+            'priority' => 'HIGH',
+            'user_id' => $user->id
+        ]);
+
+        $this->assertEquals('TODO', $todo->refresh()->status);
     }
 
     /**
