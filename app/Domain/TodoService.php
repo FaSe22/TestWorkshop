@@ -23,4 +23,9 @@ class TodoService
         return Todo::create($args);
     }
 
+    public function deleteTodo(int $id)
+    {
+        return Todo::findOrFail($id)->delete();
+    }
+
 }
