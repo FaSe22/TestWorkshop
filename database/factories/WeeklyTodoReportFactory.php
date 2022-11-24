@@ -17,7 +17,9 @@ class WeeklyTodoReportFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'todo' => $this->faker->numberBetween(0, 100),
+            'done' => $this->faker->numberBetween(0, 100),
+            'in_progress' => $this->faker->numberBetween(0, 100)
         ];
     }
 }
