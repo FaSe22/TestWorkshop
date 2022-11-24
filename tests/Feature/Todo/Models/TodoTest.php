@@ -76,6 +76,16 @@ class TodoTest extends TestCase
         Todo::create($this->fields);
     }
 
+    /**
+     * @test
+     * @return void
+     */
+    public function aTodoBelongsToAUser(): void
+    {
+        $todo =Todo::create($this->fields + ['user_id' => $this->user->id]);
+        $this->assertEquals($this->user->id, $todo->user->id);
+    }
+
 
     /**
      * @test
