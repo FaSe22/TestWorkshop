@@ -111,7 +111,14 @@ class TodoTest extends TestCase
      */
     public function dueDateShouldNotBeNullable()
     {
-
+        $user = User::factory()->create();
+        Todo::create([
+            'title' => '__title__',
+            'body' => '__body__',
+            'due_date' => null,
+            'priority' => 'HIGH',
+            'user_id' => $user->id
+        ]);
     }
 
     /**
