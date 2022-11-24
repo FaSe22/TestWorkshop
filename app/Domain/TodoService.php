@@ -13,4 +13,9 @@ class TodoService
         return Todo::all();
     }
 
+    public function getTodo(int $id)
+    {
+        return Todo::findOrFail($id);
+    }
+
 }
