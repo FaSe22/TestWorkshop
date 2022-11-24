@@ -200,6 +200,25 @@ class TodoTest extends TestCase
         $this->assertDatabaseHas('todos', ['body' => '__body__']);
     }
 
+    /**
+     * @test
+     * @return void
+     */
+    public function todoHasADueDate()
+    {
+        $user = User::factory()->create();
+
+        $todo = Todo::create([
+            'title' => '__title__',
+            'body' => '__body__',
+            'due_date' => today()->addDays(2),
+            'priority' => null,
+            'user_id' => $user->id
+        ]);
+
+        $this->assertDatabaseHas('todos', ['due_date' => today()->addDays(2)]);
+    }
+
 
 
 
