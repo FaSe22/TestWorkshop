@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class TodoTest extends TestCase
@@ -57,7 +58,16 @@ class TodoTest extends TestCase
      */
     public function titleMaxLengthIsSetTo50()
     {
+        $this->expectException(QueryException::class);
 
+        $user = User::factory()->create();
+        Todo::create([
+            'title' => Str::random(51),
+            'body' => '__body__',
+            'due_date' => today()->addDays(2),
+            'priority' => 'HIGH',
+            'user_id' => $user->id
+        ]);
     }
 
     /**
